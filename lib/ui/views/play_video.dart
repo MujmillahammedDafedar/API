@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taskbyposs/service/api_service.dart';
@@ -14,21 +16,18 @@ class PlayVideo extends StatefulWidget {
 
 class _PlayVideoState extends State<PlayVideo> {
   @override
-  String? videoURL = "https://www.youtube.com/watch?v=RFZG_IG9EqA";
+  String videoURL = "https://www.youtube.com/watch?v=RFZG_IG9EqA";
 
   late YoutubePlayerController _controller;
+  var idd;
 
   @override
   void initState() {
     Provider.of<ApiService>(context, listen: false).getVideo(widget.id);
-    var idd = Provider.of<ApiService>(context, listen: false)
-        .youtubeData
-        .results?[0]
-        .key;
+    print('iiiiiiiiiiiiiiiiiiiiiiiiii');
 
     _controller = YoutubePlayerController(
-      initialVideoId: YoutubePlayer.getThumbnail(videoId: idd.toString()),
-    );
+        initialVideoId: YoutubePlayer.getThumbnail(videoId: "RFZG_IG9EqA"));
 
     super.initState();
   }
@@ -56,16 +55,22 @@ class _PlayVideoState extends State<PlayVideo> {
   }
 
   youtubeHierarchy() {
-    return Container(
-      child: Align(
-        alignment: Alignment.center,
-        child: FittedBox(
-          fit: BoxFit.fill,
-          child: YoutubePlayer(
-            controller: _controller,
-          ),
-        ),
-      ),
-    );
+    return Consumer<ApiService>(builder: (context, data, child) {
+      return data.videoId == null
+          ? Text("Please wait while we were fetching video")
+          : YoutubePlayer(
+              controller: YoutubePlayerController(
+                initialVideoId: data.videoId, //Add videoID.
+                flags: YoutubePlayerFlags(
+                  hideControls: false,
+                  controlsVisibleAtStart: true,
+                  autoPlay: false,
+                  mute: false,
+                ),
+              ),
+              showVideoProgressIndicator: true,
+              progressIndicatorColor: Colors.red,
+            );
+    });
   }
 }

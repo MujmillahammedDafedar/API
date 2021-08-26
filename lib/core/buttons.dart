@@ -110,6 +110,8 @@ class PupolarMovieList extends StatelessWidget {
             children: [
               IconButton(
                 onPressed: () {
+                  // Provider.of<ApiService>(context, listen: false).getVideo(id);
+
                   Navigator.push(context,
                       new MaterialPageRoute(builder: (context) {
                     return PlayVideo(id: id);

@@ -12,6 +12,13 @@ class ApiService extends ChangeNotifier {
   PupularMovie get movies => _movie;
   Details get details => _details;
   YoutubeData get youtubeData => _youtube;
+  String _videoId = "";
+  String get videoId => _videoId;
+
+  set videoId(String video) {
+    _videoId = video;
+    notifyListeners();
+  }
 
   set video(YoutubeData video) {
     _youtube = video;
@@ -45,7 +52,13 @@ class ApiService extends ChangeNotifier {
 
   getVideo(int id) async {
     YoutubeData response = await api.getYTData(id);
-    video = response;
+
+    if (response.results![0].key != null) {
+      videoId = response.results![0].key.toString();
+      video = response;
+      print("oooooooooooooooo");
+      print(response.results?[0].key);
+    }
   }
 }
 
